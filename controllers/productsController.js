@@ -1,6 +1,6 @@
 const ProductsService = require('../services/productsService');
 
-const insertProduct = async (req, res) => {
+const createProduct = async (req, res) => {
   const { name, quantity } = req.body;
   try {
     const { status, message } = await ProductsService.createProduct(name, quantity);
@@ -10,4 +10,4 @@ const insertProduct = async (req, res) => {
   }
 };
 
-module.exports = insertProduct;
+module.exports = createProduct;
