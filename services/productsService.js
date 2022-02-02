@@ -1,17 +1,18 @@
 const ProductsModel = require('../models/productsModel');
 
 const error = {
-  NAME_IS_REQUIRED: { status: 400, message: '"name" is required' },
+  NAME_IS_REQUIRED: { code: 400, message: '"name" is required' },
   NAME_IS_INVALID: {
-    status: 422,
+    code: 422,
     message: '"name" length must be at least 5 characters long',
   },
-  PRODUCT_ALREADY_EXISTS: { status: 409, message: 'Product already exists' },
-  QUANTITY_IS_REQUIRED: { status: 400, message: '"quantity" is required' },
+  PRODUCT_ALREADY_EXISTS: { code: 409, message: 'Product already exists' },
+  QUANTITY_IS_REQUIRED: { code: 400, message: '"quantity" is required' },
   QUANTITY_MUST_BE_NUMBER: {
-    status: 422,
+    code: 422,
     message: '"quantity" must be a number larger than or equal to 1',
   },
+  PRODUCT_NOT_FOUND: { code: 404, message: 'Product not found' },
 };
 
 const product = (arg) => ({
@@ -19,6 +20,10 @@ const product = (arg) => ({
   isInvalid: (data = arg) => typeof data !== 'string' || data.length < 5,
   alreadyExists: async (data = arg) => ProductsModel.searchProductByName(data),
   isNotNumber: (data = arg) => typeof data !== 'number' || data <= 0,
+});
+
+const database = (arg) => ({
+  productIsNotFound: (data = arg) => !data,
 });
 
 const validateProductName = async (name) => {
@@ -39,11 +44,32 @@ const createProduct = async (name, quantity) => {
     await validateProductName(name);
     validateProductQuantity(quantity);
     const { insertId } = await ProductsModel.createProduct(name, quantity);
-    return { status: 201, message: { id: insertId, name, quantity } };
+    return { code: 201, message: { id: insertId, name, quantity } };
   } catch (e) {
     console.log(e);
     throw e;
   }
 };
 
-module.exports = { createProduct };
+const getAllProducts = async () => {
+  try {
+    const products = await ProductsModel.getAllProducts();
+    return { code: 200, message: products };
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};
+
+const getProductById = async (id) => {
+  try {
+    const response = await ProductsModel.getProductById(id);
+    if (database(response).productIsNotFound()) throw error.PRODUCT_NOT_FOUND;
+    return { code: 200, message: response };
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};
+
+module.exports = { createProduct, getAllProducts, getProductById };
