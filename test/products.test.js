@@ -262,7 +262,7 @@ describe("Products", () => {
     });
   });
 
-  describe("3 - Crie um endpoint para atualizar um produto", () => {
+  describe.only("3 - Crie um endpoint para atualizar um produto", () => {
     it("Será validado que não é possível atualizar um produto com o nome menor que 5 caracteres", async () => {
       let result;
       let resultProductId;

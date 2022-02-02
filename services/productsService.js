@@ -24,12 +24,12 @@ const product = (arg) => ({
 
 const database = (arg) => ({
   productIsNotFound: (data = arg) => !data,
+  alreadyExists: async (data = arg) => ProductsModel.searchProductByName(data),
 });
 
-const validateProductName = async (name) => {
+const validateProductName = (name) => {
   if (product(name).isUndefined()) throw error.NAME_IS_REQUIRED;
   if (product(name).isInvalid()) throw error.NAME_IS_INVALID;
-  if (await product(name).alreadyExists()) throw error.PRODUCT_ALREADY_EXISTS;
   return true;
 };
 
@@ -41,7 +41,10 @@ const validateProductQuantity = (quantity) => {
 
 const createProduct = async (name, quantity) => {
   try {
-    await validateProductName(name);
+    validateProductName(name);
+    if (await database(name).alreadyExists()) {
+      throw error.PRODUCT_ALREADY_EXISTS;
+    }
     validateProductQuantity(quantity);
     const { insertId } = await ProductsModel.createProduct(name, quantity);
     return { code: 201, message: { id: insertId, name, quantity } };
@@ -72,4 +75,23 @@ const getProductById = async (id) => {
   }
 };
 
-module.exports = { createProduct, getAllProducts, getProductById };
+const updateProductById = async (id, name, quantity) => {
+  try {
+    validateProductName(name);
+    validateProductQuantity(quantity);
+    await getProductById(id);
+    await ProductsModel.updateProductById(id, name, quantity);
+    const { code, message } = await getProductById(id);
+    return { code, message };
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};
+
+module.exports = {
+  createProduct,
+  getAllProducts,
+  getProductById,
+  updateProductById,
+};

@@ -32,4 +32,24 @@ const getProductById = async (req, res) => {
   }
 };
 
-module.exports = { createProduct, getAllProducts, getProductById };
+const updateProductById = async (req, res) => {
+  const { name, quantity } = req.body;
+  const { id } = req.params;
+  try {
+    const { code, message } = await ProductsService.updateProductById(
+      id,
+      name,
+      quantity,
+    );
+    return res.status(code).json(message);
+  } catch ({ code, message }) {
+    return res.status(code).json({ message });
+  }
+};
+
+module.exports = {
+  createProduct,
+  getAllProducts,
+  getProductById,
+  updateProductById,
+};
