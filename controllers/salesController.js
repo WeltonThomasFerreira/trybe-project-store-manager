@@ -1,10 +1,10 @@
 const SalesService = require('../services/salesService');
 
+const mapSales = (sales) =>
+  sales.map((product) => [product.product_id, product.quantity]);
+
 const createSale = async (req, res) => {
-  const sale = req.body.map((product) => [
-    product.product_id,
-    product.quantity,
-  ]);
+  const sale = mapSales(req.body);
   try {
     const { code, message } = await SalesService.createSale(sale);
     return res.status(code).json(message);
@@ -32,4 +32,15 @@ const getSaleById = async (req, res) => {
   }
 };
 
-module.exports = { createSale, getAllSales, getSaleById };
+const updateSaleById = async (req, res) => {
+  const { id } = req.params;
+  const sale = mapSales(req.body);
+  try {
+    const { code, message } = await SalesService.updateSaleById(id, sale);
+    return res.status(code).json(message);
+  } catch ({ code, message }) {
+    return res.status(code).json({ message });
+  }
+};
+
+module.exports = { createSale, getAllSales, getSaleById, updateSaleById };

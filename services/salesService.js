@@ -70,4 +70,22 @@ const getSaleById = async (id) => {
   }
 };
 
-module.exports = { createSale, getAllSales, getSaleById };
+const updateSaleById = async (id, products) => {
+  const productIdKey = 'product_id';
+  try {
+    validateProductId(products);
+    validateProductQuantity(products);
+    await SalesModel.updateSaleById(id, ...products);
+    const sales = await SalesModel.getSalesById(id);
+    const items = sales.map((sale) => ({
+      [productIdKey]: sale.product_id,
+      quantity: sale.quantity,
+    }));
+    return { code: 200, message: { id, itemsUpdated: items } };
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};
+
+module.exports = { createSale, getAllSales, getSaleById, updateSaleById };
