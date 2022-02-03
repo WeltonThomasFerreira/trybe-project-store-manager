@@ -67,7 +67,6 @@ describe("Testa productsModel", () => {
 
       it("Retorna undefined", async () => {
         const response = await ProductsModel.searchProductByName(product.name);
-        console.log(await ProductsModel.searchProductByName(product.name));
         expect(response).to.be.undefined;
       });
     });
@@ -100,6 +99,56 @@ describe("Testa productsModel", () => {
       });
     });
 
-    describe("Banco de dados não contém produtos", () => {});
+    describe("Banco de dados não contém produtos", () => {
+      before(async () => {
+        const execute = [[]];
+        sinon.stub(connection, "execute").resolves(execute);
+      });
+
+      after(async () => {
+        connection.execute.restore();
+      });
+
+      it("Retorna um array vazio", async () => {
+        const response = await ProductsModel.getAllProducts();
+        expect(response).to.be.empty;
+      });
+    });
+  });
+
+  describe("Lista produto por id", () => {
+    describe("Produto é retornado com sucesso", () => {
+      before(async () => {
+        const execute = [[{ id: 1, name: "Playstation", quantity: 18 }]];
+        sinon.stub(connection, "execute").resolves(execute);
+      });
+
+      after(async () => {
+        connection.execute.restore();
+      });
+
+      it("Retorna o objeto do produto", async () => {
+        const response = await ProductsModel.getProductById(1);
+        expect(response)
+          .to.be.an("object")
+          .to.include({ id: 1, name: "Playstation", quantity: 18 });
+      });
+    });
+
+    describe("O produto não é encontrado", () => {
+      before(async () => {
+        const execute = [[]];
+        sinon.stub(connection, "execute").resolves(execute);
+      });
+
+      after(async () => {
+        connection.execute.restore();
+      });
+
+      it('Retorna undefined', async () => {
+        const response = await ProductsModel.getProductById(1);
+        expect(response).to.be.undefined;
+      })
+    });
   });
 });
