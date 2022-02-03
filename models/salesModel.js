@@ -25,6 +25,19 @@ const createSalesProducts = async (sales) => {
   }
 };
 
+const getAllSales = async () => {
+  const SELECT_ALL_SALES = `SELECT s.id AS saleId, s.date, sp.product_id, sp.quantity 
+  FROM StoreManager.sales AS s 
+  INNER JOIN StoreManager.sales_products AS sp ON s.id = sp.sale_id`;
+  try {
+    const [rows] = await connection.execute(SELECT_ALL_SALES);
+    return rows;
+  } catch (error) {
+    console.log(error);
+    throw SERVER_ERROR;
+  }
+};
+
 const getSalesById = async (id) => {
   const SELECT_SALES_BY_ID = `SELECT s.date, sp.product_id, sp.quantity 
     FROM StoreManager.sales AS s 
@@ -39,4 +52,4 @@ const getSalesById = async (id) => {
   }
 };
 
-module.exports = { createSale, createSalesProducts, getSalesById };
+module.exports = { createSale, createSalesProducts, getAllSales, getSalesById };

@@ -7,6 +7,7 @@ const error = {
     code: 422,
     message: '"quantity" must be a number larger than or equal to 1',
   },
+  SALE_NOT_FOUND: { code: 404, message: 'Sale not found' },
 };
 
 const validateProductId = (products) => {
@@ -48,4 +49,25 @@ const createSale = async (products) => {
   }
 };
 
-module.exports = { createSale };
+const getAllSales = async () => {
+  try {
+    const sales = await SalesModel.getAllSales();
+    return { code: 200, message: sales };
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};
+
+const getSaleById = async (id) => {
+  try {
+    const response = await SalesModel.getSalesById(id);
+    if (!response[0]) throw error.SALE_NOT_FOUND;
+    return { code: 200, message: response };
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};
+
+module.exports = { createSale, getAllSales, getSaleById };

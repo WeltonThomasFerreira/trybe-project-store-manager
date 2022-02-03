@@ -13,4 +13,23 @@ const createSale = async (req, res) => {
   }
 };
 
-module.exports = createSale;
+const getAllSales = async (req, res) => {
+  try {
+    const { code, message } = await SalesService.getAllSales();
+    return res.status(code).json(message);
+  } catch ({ code, message }) {
+    return res.status(code).json({ message });
+  }
+};
+
+const getSaleById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const { code, message } = await SalesService.getSaleById(id);
+    return res.status(code).json(message);
+  } catch ({ code, message }) {
+    return res.status(code).json({ message });
+  }
+};
+
+module.exports = { createSale, getAllSales, getSaleById };
