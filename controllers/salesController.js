@@ -34,9 +34,10 @@ const getSaleById = async (req, res) => {
 
 const updateSaleById = async (req, res) => {
   const { id } = req.params;
-  const sale = mapSales(req.body);
+  const sales = req.body;
   try {
-    const { code, message } = await SalesService.updateSaleById(id, sale);
+    const { code, message } = await SalesService.updateSaleById(id, sales);
+    console.log(message);
     return res.status(code).json(message);
   } catch ({ code, message }) {
     return res.status(code).json({ message });

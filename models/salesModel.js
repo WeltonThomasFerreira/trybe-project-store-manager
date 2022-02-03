@@ -52,17 +52,19 @@ const getSalesById = async (id) => {
   }
 };
 
-const updateSaleById = async (id, productId, quantity) => {
+const updateSaleById = async (id, sales) => {
+  const [{ product_id: productId, quantity }] = sales;
   const UPDATE_SALE_BY_ID = `UPDATE StoreManager.sales_products
   SET product_id = ?, quantity = ? WHERE sale_id = ?`;
   try {
-    const [rows] = await connection.execute(UPDATE_SALE_BY_ID, [
+    const [rows] = await connection.query(UPDATE_SALE_BY_ID, [
       productId,
       quantity,
       id,
     ]);
     return rows;
   } catch (error) {
+    console.log(error);
     throw SERVER_ERROR;
   }
 };

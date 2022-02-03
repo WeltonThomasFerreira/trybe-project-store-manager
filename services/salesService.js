@@ -70,18 +70,19 @@ const getSaleById = async (id) => {
   }
 };
 
-const updateSaleById = async (id, products) => {
+const updateSaleById = async (id, sales) => {
+  const products = sales.map((product) => [product.product_id, product.quantity]);
   const productIdKey = 'product_id';
   try {
     validateProductId(products);
     validateProductQuantity(products);
-    await SalesModel.updateSaleById(id, ...products);
-    const sales = await SalesModel.getSalesById(id);
-    const items = sales.map((sale) => ({
+    await SalesModel.updateSaleById(id, sales);
+    const updatedSales = await SalesModel.getSalesById(id);
+    const items = updatedSales.map((sale) => ({
       [productIdKey]: sale.product_id,
       quantity: sale.quantity,
     }));
-    return { code: 200, message: { id, itemsUpdated: items } };
+    return { code: 200, message: { saleId: id, itemUpdated: items } };
   } catch (e) {
     console.log(e);
     throw e;
