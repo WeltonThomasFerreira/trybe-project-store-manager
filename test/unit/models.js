@@ -298,11 +298,11 @@ describe("Testa salesModel", () => {
     describe("Venda atualizado com sucesso", () => {
       before(async () => {
         const execute = [{ affectedRows: 1 }];
-        sinon.stub(connection, "execute").resolves(execute);
+        sinon.stub(connection, "query").resolves(execute);
       });
 
       after(async () => {
-        connection.execute.restore();
+        connection.query.restore();
       });
 
       it("Retorna um objeto com a propriedade affectRows", async () => {
