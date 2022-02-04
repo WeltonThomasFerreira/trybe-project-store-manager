@@ -1,7 +1,7 @@
 const sinon = require("sinon");
 const { expect } = require("chai");
 const ProductsModel = require("../../models/productsModel");
-const SalesModel = require("../../models/salesModel");
+// const SalesModel = require("../../models/salesModel");
 const ProductsService = require("../../services/productsService");
 const { it } = require("mocha");
 
@@ -66,15 +66,15 @@ describe("Testa serviço: ProductsService", () => {
     });
   });
 
-  describe("Testa a função: getProductById", () => {
-    describe("Testa se o produto é listado por id com sucesso", () => {});
-  });
+  // describe("Testa a função: getProductById", () => {
+  //   describe("Testa se o produto é listado por id com sucesso", () => {});
+  // });
 
-  describe("Testa a função: updateProductById", () => {
-    describe("Testa se o produto é atualizado com sucesso", () => {});
-  });
+  // describe("Testa a função: updateProductById", () => {
+  //   describe("Testa se o produto é atualizado com sucesso", () => {});
+  // });
 
-  describe("Testa a função: deleteProductById", () => {
-    describe("Testa se o produto é deletado com sucesso ", () => {});
-  });
+  // describe("Testa a função: deleteProductById", () => {
+  //   describe("Testa se o produto é deletado com sucesso ", () => {});
+  // });
 });
